@@ -1,0 +1,252 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wa-container {
+  display: flex;
+  height: 100vh;
+  background: #ece5dd;
+}
+.wa-sidebar {
+  width: 320px;
+  background: #075e54;
+  color: #fff;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+.wa-sidebar h2 {
+  margin: 0 1rem 1rem 1rem;
+  font-size: 1.2rem;
+}
+.wa-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+.wa-sidebar li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #0b6e6e33;
+  transition: background 0.2s;
+}
+.wa-sidebar li.active, .wa-sidebar li:hover {
+  background: #128c7e;
+}
+.wa-chat-name {
+  font-weight: bold;
+}
+.wa-chat-last {
+  font-size: 0.9rem;
+  color: #b2dfdb;
+}
+.wa-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid #ddd;
+}
+.wa-chat-header {
+  padding: 1rem;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+}
+.wa-chat-number {
+  color: #888;
+  font-size: 0.95em;
+  margin-left: 0.5em;
+}
+.wa-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #ece5dd;
+}
+.wa-message-bubble {
+  max-width: 60%;
+  padding: 0.7em 1em;
+  border-radius: 8px;
+  margin-bottom: 0.2em;
+  position: relative;
+  font-size: 1rem;
+  word-break: break-word;
+}
+.from-me {
+  align-self: flex-end;
+  background: #dcf8c6;
+  color: #222;
+}
+.from-them {
+  align-self: flex-start;
+  background: #fff;
+  color: #222;
+  border: 1px solid #e0e0e0;
+}
+.wa-message-meta {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 0.2em;
+  text-align: right;
+}
+.wa-send-box {
+  display: flex;
+  padding: 1rem;
+  background: #f0f0f0;
+  border-top: 1px solid #ddd;
+}
+.wa-send-box input {
+  flex: 1;
+  padding: 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 1rem;
+  outline: none;
+}
+.wa-send-box button {
+  margin-left: 0.5em;
+  padding: 0.7em 1.5em;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.wa-send-box button:hover {
+  background: #128c7e;
+}
+@media (max-width: 700px) {
+  .wa-container {
+    flex-direction: column;
+  }
+  .wa-sidebar {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    height: 60px;
+    padding: 0;
+  }
+  .wa-sidebar ul {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    height: 60px;
+  }
+  .wa-sidebar li {
+    min-width: 120px;
+    border-bottom: none;
+    border-right: 1px solid #0b6e6e33;
+    padding: 0.5rem 0.7rem;
+  }
+  .wa-main {
+    border-left: none;
+    border-top: 1px solid #ddd;
+  }
+}
+
+.wa-newchat-btn {
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.5em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5em;
+  transition: background 0.2s;
+}
+.wa-newchat-btn:hover {
+  background: #128c7e;
+}
+.wa-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.wa-modal {
+  background: #fff;
+  padding: 2em 2em 1em 2em;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  min-width: 300px;
+}
+.wa-modal h3 {
+  margin-top: 0;
+}
+.wa-modal input {
+  width: 100%;
+  padding: 0.7em;
+  margin-bottom: 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+}
+.wa-call-btn {
+  background: #ece5dd;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.2em;
+  transition: background 0.2s;
+}
+.wa-call-btn:hover {
+  background: #25d366;
+  color: #fff;
+}
