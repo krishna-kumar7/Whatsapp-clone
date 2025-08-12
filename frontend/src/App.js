@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { getChats, getMessages, sendMessage } from './api';
-import { io } from 'socket.io-client';
+// Lazy-load socket.io-client to reduce initial bundle size
 
 function App() {
   const [chats, setChats] = useState([]);
@@ -15,6 +15,7 @@ function App() {
   const [newChatName, setNewChatName] = useState('');
   const [newChatNumber, setNewChatNumber] = useState('');
   const socketRef = useRef(null);
+  const selectedChatRef = useRef(null);
 
   // Fetch chats on mount
   useEffect(() => {
@@ -31,6 +32,11 @@ function App() {
       });
   }, []);
 
+  // Keep a ref to the latest selectedChat for socket handlers
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+  }, [selectedChat]);
+
   // Fetch messages when selectedChat changes
   useEffect(() => {
     if (!selectedChat) return;
@@ -46,25 +52,42 @@ function App() {
       });
   }, [selectedChat]);
 
-  // Socket.IO real-time updates
+  // Socket.IO real-time updates (lazy-loaded, single connection)
   useEffect(() => {
-    const SOCKET_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
-    const socket = io(SOCKET_URL);
-    socketRef.current = socket;
+    const SOCKET_URL = (process.env.REACT_APP_API_URL || '/api').replace(/\/api$/, '');
+    let socketInstance;
+    let isMounted = true;
 
-    socket.on('new_message', (msg) => {
-      if (msg.wa_id === selectedChat) {
-        setMessages(prev => [...prev, msg]);
-      }
-      setChats(prev => prev.map(c => c._id === msg.wa_id ? { ...c, lastMessage: msg.message, lastTimestamp: msg.timestamp } : c));
-    });
-    socket.on('status_update', (msg) => {
-      setMessages(prev => prev.map(m => m._id === msg._id ? { ...m, status: msg.status } : m));
-    });
+    (async () => {
+      const { io } = await import('socket.io-client');
+      if (!isMounted) return;
+      socketInstance = io(SOCKET_URL);
+      socketRef.current = socketInstance;
+
+      socketInstance.on('new_message', (msg) => {
+        if (msg.wa_id === selectedChatRef.current) {
+          setMessages((prev) => [...prev, msg]);
+        }
+        setChats((prev) =>
+          prev.map((c) =>
+            c._id === msg.wa_id
+              ? { ...c, lastMessage: msg.message, lastTimestamp: msg.timestamp }
+              : c
+          )
+        );
+      });
+      socketInstance.on('status_update', (msg) => {
+        setMessages((prev) => prev.map((m) => (m._id === msg._id ? { ...m, status: msg.status } : m)));
+      });
+    })();
+
     return () => {
-      socket.disconnect();
+      isMounted = false;
+      if (socketInstance) {
+        socketInstance.disconnect();
+      }
     };
-  }, [selectedChat]);
+  }, []);
 
   const handleSend = async (e) => {
     e.preventDefault();

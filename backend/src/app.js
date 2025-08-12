@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
+const compression = require('compression');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -12,6 +14,7 @@ const io = require('socket.io')(http, {
 });
 
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 
 // Health check
@@ -33,6 +36,16 @@ app.use('/api', (req, res, next) => {
   req.io = io;
   next();
 }, messageRoutes);
+
+// Serve frontend build statically
+const buildPath = path.join(__dirname, '../../frontend/build');
+app.use(express.static(buildPath));
+
+// Fallback to index.html for non-API routes
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  return res.sendFile(path.join(buildPath, 'index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
